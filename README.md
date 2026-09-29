@@ -55,7 +55,7 @@ A company can have several indicators. The displayed color is the one of the mos
 | ⚠️ | `SUSPECT` | WARNING (yellow) | Suspect company |
 | ❌ | `BANNED` | DANGER (red) | Company to avoid |
 | 🚫 | `DONT_ANSWER` | DANGER (red) | Never answers |
-| ⚠️ | `FREELANCE` | DANGER (red) | Freelance |
+| ⚠️ | `FREELANCE` | WARNING (yellow) | Freelance |
 
 Indicators are defined in [`src/types/indicator.ts`](./src/types/indicator.ts).
 

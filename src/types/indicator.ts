@@ -60,7 +60,7 @@ export const INDICATORS = [
   },
   {
     icon: "⚠️",
-    criticity: "DANGER",
+    criticity: "WARNING",
     code: "FREELANCE",
     description: "Freelance",
   },
