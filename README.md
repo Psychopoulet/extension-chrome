@@ -1,6 +1,11 @@
 # LinkedIn Company Tracker
 
-Extension Chrome pour suivre des sociétés LinkedIn avec les statuts **banni**, **ESN** et **suspect**.
+> ⚠️ **Disclaimer: this project was quickly vibe-coded. It is NOT a quality project.**
+> Expect rough edges, missing tests, fragile DOM selectors (LinkedIn changes its markup often) and no guarantees of maintenance. Use at your own risk.
+
+Chrome extension (Manifest V3) to keep track of LinkedIn companies and flag them with **indicators** (wanted, IT services company, headhunter, suspect, banned, ...). Flagged company names are highlighted directly on LinkedIn pages, with a tooltip.
+
+All data is stored locally in your browser (`chrome.storage.local`). Nothing is sent to any server.
 
 ## Installation
 
@@ -9,47 +14,55 @@ npm install
 npm run build
 ```
 
-1. Ouvrir `chrome://extensions`
-2. Activer le **mode développeur**
-3. **Charger l'extension non empaquetée** → dossier `dist/`
+1. Open `chrome://extensions`
+2. Enable **Developer mode**
+3. Click **Load unpacked** and select the `dist/` folder
 
-## Développement
+## Development
 
 ```bash
 npm run dev
 ```
 
-Vite regénère `dist/` à chaque modification. Actualiser l'extension dans `chrome://extensions` si besoin.
+Vite rebuilds `dist/` on every change. Reload the extension in `chrome://extensions` if needed.
 
-## Pages prises en charge
+## Supported pages
 
-| Page | Comportement |
-|------|--------------|
-| `/company/{code}/` | Nom colorisé + tooltip, ou bouton **+** pour ajouter |
-| `/jobs/search/` et `/jobs/search-results/` | Nom d'entreprise colorisé (liste + détail) + tooltip |
-| `/jobs-tracker/` | Nom d'entreprise colorisé dans le suivi des emplois + tooltip |
-| `/jobs/view/` | Nom d'entreprise colorisé + tooltip |
+| Page | Behavior |
+|------|----------|
+| `/company/{code}/` | Highlighted name + tooltip, or a **+** button to add the company |
+| `/jobs/search/` and `/jobs/search-results/` | Highlighted company names (list + detail) + tooltip |
+| `/jobs-tracker/` | Highlighted company names in the job tracker + tooltip |
+| `/jobs/view/` | Highlighted company name + tooltip |
 
-## Fonctionnalités
+## Features
 
-- Liste locale persistante (`chrome.storage.local`)
-- Popup : ajout, modification, suppression, recherche, filtre par statut
-- Sync automatique entre onglets LinkedIn ouverts
-- Navigation SPA LinkedIn (pushState, mutations DOM)
+- Persistent local list (`chrome.storage.local`)
+- Popup: add, edit, delete, search, filter by indicator
+- JSON import / export
+- Automatic sync between open LinkedIn tabs
+- LinkedIn SPA navigation support (pushState, DOM mutations)
 
-## Test manuel
+## Indicators
 
-1. Ajouter une société via la popup (ex. `capgemini`, statut ESN, raison)
-2. Ouvrir `linkedin.com/company/capgemini/` → nom jaune, bulle au survol
-3. Ouvrir une recherche jobs contenant Capgemini → noms d'entreprise jaunes (liste + détail)
-4. Modifier le statut dans la popup → les onglets LinkedIn se mettent à jour
-5. Fermer et rouvrir Chrome → la liste est conservée
+A company can have several indicators. The displayed color is the one of the most critical indicator.
 
-## Statuts visuels
+| Icon | Code | Criticity | Description |
+|------|------|-----------|-------------|
+| ✅ | `WANTED` | OK (green) | Wanted company |
+| 💼 | `IT_SERVICES_COMPANY` | INFO (blue) | IT services company (ESN / SSI) |
+| 👨‍💼 | `HEADHUNTER` | INFO (blue) | Recruiter / placement agency |
+| ⚠️ | `SUSPECT` | WARNING (yellow) | Suspect company |
+| ❌ | `BANNED` | DANGER (red) | Company to avoid |
+| 🚫 | `DONT_ANSWER` | DANGER (red) | Never answers |
+| ⚠️ | `FREELANCE` | DANGER (red) | Freelance |
 
-| Statut | Couleur |
-|--------|---------|
-| banni | Rouge |
-| ESN / suspect | Jaune |
+Indicators are defined in [`src/types/indicator.ts`](./src/types/indicator.ts).
 
-Voir [PLAN.md](./PLAN.md) pour l'architecture complète.
+## Manual testing
+
+1. Add a company via the popup (e.g. `capgemini`, indicator `IT_SERVICES_COMPANY`)
+2. Open `linkedin.com/company/capgemini/` → name is highlighted, tooltip on hover
+3. Open a jobs search containing Capgemini → company names are highlighted (list + detail)
+4. Change the indicators in the popup → LinkedIn tabs update automatically
+5. Close and reopen Chrome → the list is kept
